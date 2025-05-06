@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plants vs Zombies - Web</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <header>
+        <h1>🌱 Plants vs Zombies - Web Edition 🧟‍♂️</h1>
+    </header>
+
+    <main>
+        <div id="game-container">
+            <div id="sun-counter">Soles: <span id="sun-amount">50</span></div>
+            <div id="plant-selector">
+                <button class="plant" data-type="sunflower">🌻</button>
+                <button class="plant" data-type="pea-shooter">🌿</button>
+                <button class="plant" data-type="wall-nut">🥜</button>
+            </div>
+            <div id="game-grid">
+                <!-- Aquí se generarán las filas y columnas del juego dinámicamente -->
+            </div>
+        </div>
+    </main>
+
+    <script src="js/game.js"></script>
+</body>
+</html>
