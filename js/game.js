@@ -13,14 +13,14 @@ for (let row = 0; row < numRows; row++) {
         cell.classList.add("grid-cell");
         cell.dataset.row = row;
         cell.dataset.col = col;
-        cell.addEventListener("click", () => plantSunflower(cell)); // Evento para plantar girasoles
+        cell.addEventListener("click", () => plantSunflower(cell));
         gameGrid.appendChild(cell);
     }
 }
 
-// Función para plantar girasoles en las celdas disponibles
+// Función para plantar girasoles
 function plantSunflower(cell) {
-    if (sunAmount >= 50 && !cell.hasChildNodes()) { // Coste: 50 soles
+    if (sunAmount >= 50 && !cell.hasChildNodes()) {
         sunAmount -= 50;
         sunDisplay.textContent = sunAmount;
 
@@ -33,38 +33,43 @@ function plantSunflower(cell) {
     }
 }
 
-// Función para generar soles en celdas con girasoles
+// Generación de soles con el tiempo
 function generateSun(cell) {
     setInterval(() => {
         if (cell.hasChildNodes()) {
-            sunAmount += 25; // Cada girasol genera 25 soles con el tiempo
+            sunAmount += 25;
             sunDisplay.textContent = sunAmount;
         }
-    }, 5000); // Cada 5 segundos
+    }, 5000);
 }
 
-// **SISTEMA DE ZOMBIS**
+// **ZOMBIS ALINEADOS A LA CUADRÍCULA**
 function spawnZombie() {
     const row = Math.floor(Math.random() * numRows); // Aparece en una fila aleatoria
     const zombie = document.createElement("img");
     zombie.src = "../assets/zombie.png";
     zombie.classList.add("zombie");
+
+    // Ajustar posición inicial alineada con la cuadrícula
     zombie.style.position = "absolute";
-    zombie.style.left = "900px"; // Aparece desde la derecha
+    zombie.style.left = "900px"; // Inicia desde el borde derecho
     zombie.style.top = `${row * 85}px`;
 
-    document.body.appendChild(zombie);
-    moveZombie(zombie);
+    document.getElementById("game-container").appendChild(zombie);
+    moveZombie(zombie, row);
 }
 
-function moveZombie(zombie) {
+// Movimiento alineado de los zombis
+function moveZombie(zombie, row) {
     let position = 900;
+    const cellSize = 80; // Tamaño de cada celda en px
 
     const moveInterval = setInterval(() => {
         position -= 2; // Movimiento lento del zombi
         zombie.style.left = `${position}px`;
 
-        if (position <= 50) { 
+        // Verificar si el zombi llega al final de la cuadrícula (casa del jugador)
+        if (position <= 50) {
             alert("¡Los zombis han llegado a tu casa!");
             clearInterval(moveInterval);
             zombie.remove();
@@ -73,4 +78,4 @@ function moveZombie(zombie) {
 }
 
 // Generar zombis con el tiempo
-setInterval(spawnZombie, 8000); // Cada 8 segundos
+setInterval(spawnZombie, 8000);
