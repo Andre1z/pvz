@@ -1,51 +1,55 @@
 document.addEventListener("DOMContentLoaded", () => {
-    // Manejar el formulario de registro
-    const registerForm = document.getElementById("register-form");
-    if (registerForm) {
-        registerForm.addEventListener("submit", (event) => {
-            event.preventDefault();
-
-            const formData = new FormData(registerForm);
-
-            fetch("php/register.php", {
-                method: "POST",
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.status === "success") {
-                    alert("¡Cuenta creada correctamente!");
-                    window.location.href = "login.html"; // Redirigir a login tras éxito
-                } else {
-                    alert("Error: " + data.message);
-                }
-            })
-            .catch(error => console.error("Error en la solicitud:", error));
-        });
-    }
-
-    // Manejar el formulario de inicio de sesión
     const loginForm = document.getElementById("login-form");
+    const registerForm = document.getElementById("register-form");
+
     if (loginForm) {
-        loginForm.addEventListener("submit", (event) => {
+        loginForm.addEventListener("submit", async (event) => {
             event.preventDefault();
 
             const formData = new FormData(loginForm);
-
-            fetch("php/login.php", {
+            const response = await fetch("login.php", {
                 method: "POST",
                 body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.status === "success") {
-                    alert("Inicio de sesión exitoso. Bienvenido, " + data.username);
-                    window.location.href = "dashboard.html"; // Redirigir tras éxito
-                } else {
-                    alert("Error: " + data.message);
-                }
-            })
-            .catch(error => console.error("Error en la solicitud:", error));
+            });
+
+            const result = await response.json();
+
+            if (result.status === "success") {
+                window.location.href = "../index.php"; // Redirigir tras inicio de sesión
+            } else {
+                showErrorMessage(loginForm, result.message);
+            }
+        });
+    }
+
+    if (registerForm) {
+        registerForm.addEventListener("submit", async (event) => {
+            event.preventDefault();
+
+            const formData = new FormData(registerForm);
+            const response = await fetch("register.php", {
+                method: "POST",
+                body: formData
+            });
+
+            const result = await response.json();
+
+            if (result.status === "success") {
+                window.location.href = "login.php"; // Redirigir al login tras registro exitoso
+            } else {
+                showErrorMessage(registerForm, result.message);
+            }
         });
     }
 });
+
+// Función para mostrar mensajes de error en pantalla
+function showErrorMessage(form, message) {
+    let errorElement = form.querySelector(".error-message");
+    if (!errorElement) {
+        errorElement = document.createElement("p");
+        errorElement.classList.add("error-message");
+        form.prepend(errorElement);
+    }
+    errorElement.textContent = message;
+}
