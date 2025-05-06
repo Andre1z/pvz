@@ -8,23 +8,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $password = trim($_POST['password']);
     $confirmPassword = trim($_POST['confirm_password']);
 
-    // Validar que los campos no estén vacíos
     if (empty($username) || empty($password) || empty($confirmPassword)) {
         echo json_encode(['status' => 'error', 'message' => 'Todos los campos son obligatorios.']);
         exit();
     }
 
-    // Validar que las contraseñas coincidan
     if ($password !== $confirmPassword) {
         echo json_encode(['status' => 'error', 'message' => 'Las contraseñas no coinciden.']);
         exit();
     }
 
-    // Hash seguro de la contraseña
     $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
 
     try {
-        // Verificar si el usuario ya existe en la base de datos `pvz`
         $stmt = $pdo->prepare("SELECT id FROM users WHERE username = :username");
         $stmt->execute([':username' => $username]);
 
@@ -33,7 +29,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             exit();
         }
 
-        // Insertar el nuevo usuario en `users`
         $stmt = $pdo->prepare("INSERT INTO users (username, password) VALUES (:username, :password)");
         $stmt->execute([':username' => $username, ':password' => $hashedPassword]);
 
@@ -67,6 +62,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         <button type="submit">Registrarse</button>
     </form>
+
+    <p>¿Ya tienes cuenta? <a href="login.php">Inicia sesión aquí</a></p>
 
     <script src="../js/auth.js"></script>
 </body>
