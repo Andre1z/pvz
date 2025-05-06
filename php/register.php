@@ -1,13 +1,13 @@
 <?php
 require_once 'db.php';
 
-header('Content-Type: application/json');
-
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    header('Content-Type: application/json');
+
     $username = trim($_POST['username']);
     $password = trim($_POST['password']);
 
-    // Validación básica
+    // Validar que los campos no estén vacíos
     if (empty($username) || empty($password)) {
         echo json_encode(['status' => 'error', 'message' => 'Todos los campos son obligatorios.']);
         exit();
@@ -17,7 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
 
     try {
-        // Verificar si el usuario ya existe en la tabla `users` de la base de datos `pvz`
+        // Verificar si el usuario ya existe en la base de datos `pvz`
         $stmt = $pdo->prepare("SELECT id FROM users WHERE username = :username");
         $stmt->execute([':username' => $username]);
 
@@ -31,8 +31,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->execute([':username' => $username, ':password' => $hashedPassword]);
 
         echo json_encode(['status' => 'success', 'message' => 'Cuenta creada correctamente.']);
+        exit();
     } catch (PDOException $e) {
         echo json_encode(['status' => 'error', 'message' => 'Error al registrar usuario: ' . $e->getMessage()]);
+        exit();
     }
 }
 ?>
