@@ -14,11 +14,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     try {
-        // Buscar usuario en la base de datos
+        // Buscar usuario en la base de datos `pvz` dentro de la tabla `users`
         $stmt = $pdo->prepare("SELECT id, password FROM users WHERE username = :username");
         $stmt->execute([':username' => $username]);
         $user = $stmt->fetch();
 
+        // Verificación de contraseña segura con `password_verify()`
         if (!$user || !password_verify($password, $user['password'])) {
             echo json_encode(['status' => 'error', 'message' => 'Credenciales inválidas.']);
             exit();
@@ -32,7 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } catch (PDOException $e) {
         echo json_encode(['status' => 'error', 'message' => 'Error en la autenticación: ' . $e->getMessage()]);
     }
-} 
+}
 ?>
 
 <!DOCTYPE html>
