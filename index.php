@@ -1,4 +1,8 @@
 <?php
+require_once 'php/config.php';
+?>
+
+<?php
 session_start();
 
 // Verificar si el usuario ha iniciado sesión
