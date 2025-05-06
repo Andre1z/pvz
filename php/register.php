@@ -1,3 +1,25 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Registro de usuario</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <h2>Registro de usuario</h2>
+    <form id="register-form" method="POST">
+        <label for="username">Nombre de usuario:</label>
+        <input type="text" id="username" name="username" required>
+
+        <label for="password">Contraseña:</label>
+        <input type="password" id="password" name="password" required>
+
+        <button type="submit">Registrarse</button>
+    </form>
+
+    <script src="js/auth.js"></script>
+</body>
+</html>
 <?php
 require_once 'db.php';
 
@@ -7,24 +29,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username = trim($_POST['username']);
     $password = trim($_POST['password']);
 
+    // Validación básica
     if (empty($username) || empty($password)) {
         echo json_encode(['status' => 'error', 'message' => 'Todos los campos son obligatorios.']);
         exit;
     }
 
-    // Hashing seguro de la contraseña
+    // Hash seguro de la contraseña
     $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
 
     try {
         // Verificamos si el usuario ya existe
         $stmt = $pdo->prepare("SELECT id FROM users WHERE username = :username");
         $stmt->execute([':username' => $username]);
+
         if ($stmt->fetch()) {
             echo json_encode(['status' => 'error', 'message' => 'El nombre de usuario ya está en uso.']);
             exit;
         }
 
-        // Insertamos el nuevo usuario en la base de datos
+        // Insertamos el usuario con la contraseña hasheada
         $stmt = $pdo->prepare("INSERT INTO users (username, password) VALUES (:username, :password)");
         $stmt->execute([':username' => $username, ':password' => $hashedPassword]);
 
@@ -32,7 +56,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } catch (PDOException $e) {
         echo json_encode(['status' => 'error', 'message' => 'Error al registrar usuario: ' . $e->getMessage()]);
     }
-} else {
-    echo json_encode(['status' => 'error', 'message' => 'Método no permitido.']);
-}
+} 
 ?>
