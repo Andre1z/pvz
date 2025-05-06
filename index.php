@@ -1,4 +1,12 @@
-<?php session_start(); ?>
+<?php
+session_start();
+
+// Verificamos si el usuario ha iniciado sesión
+if (!isset($_SESSION['user_id'])) {
+    header("Location: php/login.php"); // Redirigir al login si no está autenticado
+    exit();
+}
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -12,23 +20,19 @@
     </header>
 
     <nav>
-        <a href="?page=register">Registrarse</a>
-        <a href="?page=login">Iniciar sesión</a>
+        <a href="php/logout.php">Cerrar sesión</a>
     </nav>
 
     <main>
-        <?php
-        if (isset($_GET['page'])) {
-            $page = $_GET['page'];
-            if ($page === "register") {
-                require_once "php/register.php";
-            } elseif ($page === "login") {
-                require_once "php/login.php";
-            }
-        }
-        ?>
+        <p>Bienvenido, <?php echo $_SESSION['username']; ?>. ¡Disfruta del juego!</p>
+
+        <div id="game-container">
+            <!-- Aquí irá el juego -->
+            <div id="game-grid"></div>
+            <p>Soles: <span id="sun-amount">50</span></p>
+        </div>
     </main>
 
-    <script src="js/auth.js"></script>
+    <script src="js/game.js"></script>
 </body>
 </html>
