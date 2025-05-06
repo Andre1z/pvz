@@ -1,5 +1,5 @@
 <?php
-require_once 'config.php'; // Importamos la configuración
+require_once '../config.php'; // Importamos la configuración
 
 try {
     // Conexión a MySQL usando PDO
