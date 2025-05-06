@@ -1,89 +1,76 @@
-document.addEventListener("DOMContentLoaded", () => {
-    const gameGrid = document.getElementById("game-grid");
-    const sunAmount = document.getElementById("sun-amount");
-    let sunPoints = 50; // Soles iniciales
-    const plants = [];
+// Configuración del juego
+const numRows = 5;  // Número de filas en el jardín
+const numCols = 9;  // Número de columnas donde plantar
+let sunAmount = 50; // Soles disponibles
 
-    // Configuración del tablero de juego (5 filas x 9 columnas)
-    const rows = 5;
-    const cols = 9;
+const gameGrid = document.getElementById("game-grid");
+const sunDisplay = document.getElementById("sun-amount");
 
-    function createGameGrid() {
-        for (let r = 0; r < rows; r++) {
-            const rowDiv = document.createElement("div");
-            rowDiv.classList.add("row");
+// Crear la cuadrícula visualmente en HTML
+for (let row = 0; row < numRows; row++) {
+    for (let col = 0; col < numCols; col++) {
+        const cell = document.createElement("div");
+        cell.classList.add("grid-cell");
+        cell.dataset.row = row;
+        cell.dataset.col = col;
+        cell.addEventListener("click", () => plantSunflower(cell)); // Evento para plantar girasoles
+        gameGrid.appendChild(cell);
+    }
+}
 
-            for (let c = 0; c < cols; c++) {
-                const cell = document.createElement("div");
-                cell.classList.add("cell");
-                cell.dataset.row = r;
-                cell.dataset.col = c;
-                rowDiv.appendChild(cell);
-            }
-            gameGrid.appendChild(rowDiv);
+// Función para plantar girasoles en las celdas disponibles
+function plantSunflower(cell) {
+    if (sunAmount >= 50 && !cell.hasChildNodes()) { // Coste: 50 soles
+        sunAmount -= 50;
+        sunDisplay.textContent = sunAmount;
+
+        const sunflower = document.createElement("img");
+        sunflower.src = "../assets/sunflower.png"; 
+        sunflower.classList.add("plant");
+        cell.appendChild(sunflower);
+
+        generateSun(cell);
+    }
+}
+
+// Función para generar soles en celdas con girasoles
+function generateSun(cell) {
+    setInterval(() => {
+        if (cell.hasChildNodes()) {
+            sunAmount += 25; // Cada girasol genera 25 soles con el tiempo
+            sunDisplay.textContent = sunAmount;
         }
-    }
+    }, 5000); // Cada 5 segundos
+}
 
-    function updateSunPoints(amount) {
-        sunPoints += amount;
-        sunAmount.textContent = sunPoints;
-    }
+// **SISTEMA DE ZOMBIS**
+function spawnZombie() {
+    const row = Math.floor(Math.random() * numRows); // Aparece en una fila aleatoria
+    const zombie = document.createElement("img");
+    zombie.src = "../assets/zombie.png";
+    zombie.classList.add("zombie");
+    zombie.style.position = "absolute";
+    zombie.style.left = "900px"; // Aparece desde la derecha
+    zombie.style.top = `${row * 85}px`;
 
-    document.querySelectorAll(".plant").forEach(button => {
-        button.addEventListener("click", () => {
-            const plantType = button.dataset.type;
-            placePlant(plantType);
-        });
-    });
+    document.body.appendChild(zombie);
+    moveZombie(zombie);
+}
 
-    function placePlant(type) {
-        if (sunPoints >= getPlantCost(type)) {
-            document.querySelectorAll(".cell").forEach(cell => {
-                cell.addEventListener("click", function () {
-                    if (!cell.classList.contains("occupied")) {
-                        cell.classList.add("occupied", type);
-                        plants.push({ type, row: cell.dataset.row, col: cell.dataset.col });
-                        updateSunPoints(-getPlantCost(type));
-                    }
-                }, { once: true });
-            });
+function moveZombie(zombie) {
+    let position = 900;
+
+    const moveInterval = setInterval(() => {
+        position -= 2; // Movimiento lento del zombi
+        zombie.style.left = `${position}px`;
+
+        if (position <= 50) { 
+            alert("¡Los zombis han llegado a tu casa!");
+            clearInterval(moveInterval);
+            zombie.remove();
         }
-    }
+    }, 100);
+}
 
-    function getPlantCost(type) {
-        const costs = {
-            sunflower: 50,
-            "pea-shooter": 100,
-            "wall-nut": 75
-        };
-        return costs[type] || 0;
-    }
-
-    function spawnZombie() {
-        const row = Math.floor(Math.random() * rows);
-        const zombie = document.createElement("div");
-        zombie.classList.add("zombie");
-        zombie.style.top = `${row * 100}px`;
-        zombie.style.left = "800px"; // Aparece en el borde derecho
-        gameGrid.appendChild(zombie);
-
-        moveZombie(zombie, row);
-    }
-
-    function moveZombie(zombie, row) {
-        let position = 800;
-        const interval = setInterval(() => {
-            position -= 5; // Movimiento de los zombis hacia la izquierda
-            zombie.style.left = `${position}px`;
-
-            if (position <= 0) {
-                clearInterval(interval);
-                alert("¡Los zombis han invadido la casa!");
-            }
-        }, 100);
-    }
-
-    setInterval(spawnZombie, 5000); // Aparece un nuevo zombi cada 5 segundos
-
-    createGameGrid();
-});
+// Generar zombis con el tiempo
+setInterval(spawnZombie, 8000); // Cada 8 segundos
