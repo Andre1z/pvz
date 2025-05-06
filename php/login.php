@@ -2,35 +2,32 @@
 session_start();
 require_once 'db.php';
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    header('Content-Type: application/json');
+$errorMessage = "";
 
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username = trim($_POST['username']);
     $password = trim($_POST['password']);
 
     if (empty($username) || empty($password)) {
-        echo json_encode(['status' => 'error', 'message' => 'Todos los campos son obligatorios.']);
-        exit();
-    }
+        $errorMessage = "Todos los campos son obligatorios.";
+    } else {
+        try {
+            $stmt = $pdo->prepare("SELECT id, password FROM users WHERE username = :username");
+            $stmt->execute([':username' => $username]);
+            $user = $stmt->fetch();
 
-    try {
-        $stmt = $pdo->prepare("SELECT id, password FROM users WHERE username = :username");
-        $stmt->execute([':username' => $username]);
-        $user = $stmt->fetch();
-
-        if (!$user || !password_verify($password, $user['password'])) {
-            echo json_encode(['status' => 'error', 'message' => 'Credenciales inválidas.']);
-            exit();
+            if (!$user || !password_verify($password, $user['password'])) {
+                $errorMessage = "Usuario o contraseña incorrectos.";
+            } else {
+                $_SESSION['user_id'] = $user['id'];
+                $_SESSION['username'] = $username;
+                header("Location: ../index.php");
+                exit();
+            }
+        } catch (PDOException $e) {
+            // Suprimir errores en consola y solo mostrar mensaje en pantalla
+            $errorMessage = "Error en la autenticación. Inténtalo de nuevo.";
         }
-
-        $_SESSION['user_id'] = $user['id'];
-        $_SESSION['username'] = $username;
-
-        echo json_encode(['status' => 'success', 'message' => 'Inicio de sesión exitoso.', 'username' => $username]);
-        exit();
-    } catch (PDOException $e) {
-        echo json_encode(['status' => 'error', 'message' => 'Error en la autenticación: ' . $e->getMessage()]);
-        exit();
     }
 }
 ?>
@@ -44,6 +41,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 <body>
     <h2>Iniciar sesión</h2>
+
+    <?php if (!empty($errorMessage)): ?>
+        <p class="error-message"><?php echo htmlspecialchars($errorMessage); ?></p>
+    <?php endif; ?>
+
     <form id="login-form" method="POST">
         <label for="username">Nombre de usuario:</label>
         <input type="text" id="username" name="username" required>
