@@ -2,32 +2,27 @@
 session_start();
 require_once 'db.php';
 
-// Si la solicitud es POST, procesamos el login
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     header('Content-Type: application/json');
 
     $username = trim($_POST['username']);
     $password = trim($_POST['password']);
 
-    // Validar que los campos no estén vacíos
     if (empty($username) || empty($password)) {
         echo json_encode(['status' => 'error', 'message' => 'Todos los campos son obligatorios.']);
         exit();
     }
 
     try {
-        // Buscar el usuario en la base de datos
         $stmt = $pdo->prepare("SELECT id, password FROM users WHERE username = :username");
         $stmt->execute([':username' => $username]);
         $user = $stmt->fetch();
 
-        // Verificar la contraseña hasheada con `password_verify()`
         if (!$user || !password_verify($password, $user['password'])) {
             echo json_encode(['status' => 'error', 'message' => 'Credenciales inválidas.']);
             exit();
         }
 
-        // Iniciar sesión y almacenar datos del usuario
         $_SESSION['user_id'] = $user['id'];
         $_SESSION['username'] = $username;
 
@@ -58,6 +53,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         <button type="submit">Entrar</button>
     </form>
+
+    <p>¿No tienes cuenta? <a href="register.php">Regístrate aquí</a></p>
 
     <script src="../js/auth.js"></script>
 </body>
