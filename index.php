@@ -1,11 +1,7 @@
 <?php
 require_once 'php/config.php';
-?>
 
-<?php
-session_start();
-
-// Verificar si el usuario ha iniciado sesión
+// Verificamos si el usuario ha iniciado sesión
 if (!isset($_SESSION['user_id'])) {
     header("Location: php/login.php");
     exit();
@@ -16,7 +12,7 @@ if (!isset($_SESSION['user_id'])) {
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Plants vs Zombies - Web</title>
+    <title>Plants vs Zombies - Web Edition</title>
     <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
@@ -29,10 +25,9 @@ if (!isset($_SESSION['user_id'])) {
     </nav>
 
     <main>
-        <p>Bienvenido, <?php echo $_SESSION['username']; ?>. ¡Disfruta del juego!</p>
+        <p>Bienvenido, <?php echo htmlspecialchars($_SESSION['username']); ?>. ¡Disfruta del juego!</p>
 
         <div id="game-container">
-            <!-- Aquí irá el juego -->
             <div id="game-grid"></div>
             <p>Soles: <span id="sun-amount">50</span></p>
         </div>
@@ -46,7 +41,7 @@ if (!isset($_SESSION['user_id'])) {
                 </tr>
             </thead>
             <tbody>
-                <!-- Las puntuaciones se cargarán aquí mediante AJAX -->
+                <!-- Las puntuaciones se cargarán aquí con AJAX -->
             </tbody>
         </table>
     </main>
