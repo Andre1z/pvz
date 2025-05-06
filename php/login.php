@@ -25,7 +25,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 exit();
             }
         } catch (PDOException $e) {
-            // Suprimir errores en consola y solo mostrar mensaje en pantalla
             $errorMessage = "Error en la autenticación. Inténtalo de nuevo.";
         }
     }
@@ -40,23 +39,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link rel="stylesheet" href="../css/styles.css">
 </head>
 <body>
-    <h2>Iniciar sesión</h2>
+    <div class="form-container">
+        <form id="login-form" method="POST">
+            <h2>Iniciar sesión</h2>
 
-    <?php if (!empty($errorMessage)): ?>
-        <p class="error-message"><?php echo htmlspecialchars($errorMessage); ?></p>
-    <?php endif; ?>
+            <?php if (!empty($errorMessage)): ?>
+                <p class="error-message"><?php echo htmlspecialchars($errorMessage); ?></p>
+            <?php endif; ?>
 
-    <form id="login-form" method="POST">
-        <label for="username">Nombre de usuario:</label>
-        <input type="text" id="username" name="username" required>
+            <label for="username">Nombre de usuario:</label>
+            <input type="text" id="username" name="username" required>
 
-        <label for="password">Contraseña:</label>
-        <input type="password" id="password" name="password" required>
+            <label for="password">Contraseña:</label>
+            <input type="password" id="password" name="password" required>
 
-        <button type="submit">Entrar</button>
-    </form>
+            <button type="submit">Entrar</button>
 
-    <p>¿No tienes cuenta? <a href="register.php">Regístrate aquí</a></p>
+            <p>¿No tienes cuenta? <a href="register.php">Regístrate aquí</a></p>
+        </form>
+    </div>
 
     <script src="../js/auth.js"></script>
 </body>
