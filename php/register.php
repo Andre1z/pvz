@@ -6,10 +6,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $username = trim($_POST['username']);
     $password = trim($_POST['password']);
+    $confirmPassword = trim($_POST['confirm_password']);
 
     // Validar que los campos no estén vacíos
-    if (empty($username) || empty($password)) {
+    if (empty($username) || empty($password) || empty($confirmPassword)) {
         echo json_encode(['status' => 'error', 'message' => 'Todos los campos son obligatorios.']);
+        exit();
+    }
+
+    // Validar que las contraseñas coincidan
+    if ($password !== $confirmPassword) {
+        echo json_encode(['status' => 'error', 'message' => 'Las contraseñas no coinciden.']);
         exit();
     }
 
@@ -54,6 +61,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         <label for="password">Contraseña:</label>
         <input type="password" id="password" name="password" required>
+
+        <label for="confirm_password">Confirmar contraseña:</label>
+        <input type="password" id="confirm_password" name="confirm_password" required>
 
         <button type="submit">Registrarse</button>
     </form>
