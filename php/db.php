@@ -1,14 +1,15 @@
 <?php
-require_once '../config.php'; // Importamos la configuración
+require_once 'config.php';
 
 try {
-    // Conexión a MySQL usando PDO
+    // Crear una conexión PDO segura
     $pdo = new PDO("mysql:host=" . DB_HOST . ";dbname=" . DB_NAME, DB_USER, DB_PASS, [
-        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,  // Modo de error para detectar problemas
-        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC, // Devuelve datos como array asociativo
-        PDO::ATTR_EMULATE_PREPARES => false // Mejora la seguridad contra inyecciones SQL
+        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,  // Modo de errores con excepciones
+        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC, // Modo de obtención de datos por defecto
+        PDO::ATTR_EMULATE_PREPARES => false  // Evita emulación de consultas preparadas
     ]);
 } catch (PDOException $e) {
-    die("Error en la conexión a la base de datos: " . $e->getMessage());
+    // Manejo de errores en la conexión
+    die("Error de conexión a la base de datos: " . $e->getMessage());
 }
 ?>
