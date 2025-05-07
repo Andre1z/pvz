@@ -76,7 +76,7 @@ $username = isset($_SESSION['username']) ? htmlspecialchars($_SESSION['username'
         });
     </script>
     <footer>
-        <p>© <?php echo date("Y"); ?> Andrei</p>
+        <p>© <?php echo date("Y"); ?> Andrei | PvZ Web Edition</p>
         <p><a href="php/logout.php">Cerrar sesión</a></p>
     </footer>
 </body>
