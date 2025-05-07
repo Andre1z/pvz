@@ -1,0 +1,75 @@
+/* Estilos específicos para login.php y register.php */
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    font-family: "Comic Sans MS", cursive, sans-serif;
+    background: url('../assets/images/background.jpg') no-repeat center/cover;
+    background-size: cover;
+    backdrop-filter: blur(8px);
+}
+
+/* Formulario centrado */
+.form-container {
+    background: rgba(90, 143, 61, 0.9); /* Verde PvZ con transparencia */
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.6);
+    width: 320px;
+    text-align: center;
+}
+
+/* Título del formulario */
+h2 {
+    color: #fff;
+    margin-bottom: 15px;
+}
+
+/* Campos de entrada */
+input {
+    width: 90%;
+    padding: 10px;
+    margin: 8px 0;
+    border: 2px solid #5a8f3d;
+    border-radius: 6px;
+    background: white;
+    color: #333;
+    font-size: 16px;
+}
+
+/* Botón */
+button {
+    width: 100%;
+    background-color: #fbbc05;
+    color: black;
+    font-size: 18px;
+    padding: 12px;
+    border: none;
+    cursor: pointer;
+    margin-top: 10px;
+    border-radius: 6px;
+    transition: 0.3s;
+}
+
+button:hover {
+    background-color: #ff9f00;
+}
+
+/* Mensajes de error */
+.error-message {
+    color: red;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+/* Estilos para enlaces */
+p a {
+    color: #fff;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+p a:hover {
+    color: #ffd700;
+}
