@@ -29,7 +29,7 @@ function plantSunflower(cell) {
         sunDisplay.textContent = sunAmount;
 
         const sunflower = document.createElement("img");
-        sunflower.src = "../assets/sunflower.png"; 
+        sunflower.src = "/assets/images/Sunflower.png"; 
         sunflower.classList.add("plant");
         cell.appendChild(sunflower);
 
@@ -51,7 +51,7 @@ function generateSun(cell) {
 function spawnZombie() {
     const row = Math.floor(Math.random() * numRows); // Aparece en una fila aleatoria
     const zombie = document.createElement("img");
-    zombie.src = "../assets/zombie.png";
+    zombie.src = "/assets/images/Zombie.png";
     zombie.classList.add("zombie");
 
     // Ajustar posición inicial alineada con la cuadrícula
