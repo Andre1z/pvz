@@ -1,44 +1,38 @@
 /* Estilos generales */
 body {
     font-family: "Comic Sans MS", cursive, sans-serif;
-    background: url('../assets/background.jpg') no-repeat center/cover;
+    background: url('../assets/images/background.jpg') no-repeat center/cover;
     background-size: cover;
     height: 100vh;
     display: flex;
     flex-direction: column;
     align-items: center;
-    backdrop-filter: blur(8px); /* Desenfoque del fondo */
-    color: #333; /* Color oscuro para mayor legibilidad */
+    backdrop-filter: blur(8px);
+    color: #333;
 }
 
 /* Contenedor del juego */
 #game-container {
-    background: rgba(255, 255, 255, 0.85); /* Fondo semi-transparente */
+    background: rgba(255, 255, 255, 0.85);
     padding: 15px;
     border-radius: 10px;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.6);
     text-align: center;
+    margin-top: 20px;
 }
 
-/* Visualización de soles */
-#sun-amount {
-    font-size: 22px;
-    font-weight: bold;
-    color: #fbbc05; /* Amarillo brillante */
-}
-
-/* Estilos de la cuadrícula de juego */
+/* Cuadrícula de juego */
 #game-grid {
     display: grid;
-    grid-template-columns: repeat(9, 80px); /* Columnas de plantación */
-    grid-template-rows: repeat(5, 80px); /* Filas del nivel */
-    gap: 5px; /* Espaciado entre celdas */
-    background: #5a8f3d; /* Verde PvZ */
+    grid-template-columns: repeat(9, 80px);
+    grid-template-rows: repeat(5, 80px);
+    gap: 5px;
+    background: #5a8f3d;
     padding: 10px;
     border-radius: 10px;
 }
 
-/* Celdas donde se pueden plantar */
+/* Celdas de la cuadrícula */
 .grid-cell {
     width: 80px;
     height: 80px;
@@ -51,7 +45,7 @@ body {
 }
 
 .grid-cell:hover {
-    background: rgba(255, 255, 255, 0.5); /* Destaca al pasar el mouse */
+    background: rgba(255, 255, 255, 0.5);
 }
 
 /* Estilos de las plantas */
@@ -70,24 +64,55 @@ body {
     }
 }
 
+/* Estilos del Peashooter */
+.pea {
+    width: 20px;
+    height: 20px;
+    position: absolute;
+    transition: left 0.1s linear;
+}
+
 /* Estilos de los zombis */
 .zombie {
     width: 70px;
     height: auto;
     position: absolute;
-    transition: left 0.1s linear; /* Movimiento suave */
+    transition: left 6s linear;
 }
 
-/* Mensajes de error */
-.error-message {
-    color: red;
-    font-weight: bold;
-    margin-top: 10px;
+/* Contenedor de los formularios */
+.form-container {
+    background: rgba(90, 143, 61, 0.9);
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.6);
+    width: 320px;
+    text-align: center;
+    position:center;
 }
 
-/* Botón estilizado */
+/* Título del formulario */
+h2 {
+    color: #fff;
+    margin-bottom: 15px;
+}
+
+/* Campos de entrada */
+input {
+    width: 90%;
+    padding: 10px;
+    margin: 8px 0;
+    border: 2px solid #5a8f3d;
+    border-radius: 6px;
+    background: white;
+    color: #333;
+    font-size: 16px;
+}
+
+/* Botón */
 button {
-    background-color: #fbbc05; /* Amarillo PvZ */
+    width: 100%;
+    background-color: #fbbc05;
     color: black;
     font-size: 18px;
     padding: 12px;
@@ -102,13 +127,20 @@ button:hover {
     background-color: #ff9f00;
 }
 
-/* Estilos para enlaces */
+/* Mensajes de error */
+.error-message {
+    color: red;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+/* Estilos de enlaces */
 p a {
-    color: #355e3b; /* Verde oscuro PvZ */
+    color: #fff;
     font-weight: bold;
     text-decoration: none;
 }
 
 p a:hover {
-    color: #000; /* Negro al pasar el ratón */
+    color: #ffd700;
 }
