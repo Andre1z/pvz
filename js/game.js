@@ -241,3 +241,61 @@ document.querySelectorAll(".grid-cell").forEach(cell => {
         }
     });
 });
+function updateGameSession() {
+    const plantsData = {};
+    document.querySelectorAll(".plant").forEach(plant => {
+        let row = plant.parentElement.dataset.row;
+        let col = plant.parentElement.dataset.col;
+        plantsData[`(${row},${col})`] = plant.classList.contains("sunflower") ? "sunflower" : "peashooter";
+    });
+
+    const zombiesData = {};
+    document.querySelectorAll(".zombie").forEach(zombie => {
+        let row = zombie.parentElement.dataset.row;
+        let col = zombie.parentElement.dataset.col;
+        zombiesData[`(${row},${col})`] = "zombie";
+    });
+
+    fetch("php/save_game_session.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            sun_amount: sunAmount,
+            plants: JSON.stringify(plantsData),
+            zombies: JSON.stringify(zombiesData)
+        })
+    })
+    .then(response => response.json())
+    .then(data => console.log("Sesión actualizada:", data))
+    .catch(error => console.error("Error al actualizar sesión:", error));
+}
+document.addEventListener("DOMContentLoaded", function() {
+    fetch("php/get_game_session.php")
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === "success") {
+            const session = data.session;
+            sunAmount = session.sun_amount;
+            sunDisplay.textContent = sunAmount;
+
+            // Cargar plantas desde sesión
+            const plantsData = JSON.parse(session.plants);
+            Object.entries(plantsData).forEach(([position, type]) => {
+                const [row, col] = position.match(/\d+/g).map(Number);
+                plantPlant(gridCells[row][col], type);
+            });
+
+            // Cargar zombis desde sesión
+            const zombiesData = JSON.parse(session.zombies);
+            Object.entries(zombiesData).forEach(([position, type]) => {
+                const [row, col] = position.match(/\d+/g).map(Number);
+                spawnZombie(gridCells[row][col]);
+            });
+
+            console.log("Sesión cargada correctamente:", session);
+        } else {
+            console.log("No hay sesión guardada.");
+        }
+    })
+    .catch(error => console.error("Error al cargar sesión:", error));
+});
