@@ -1,7 +1,6 @@
 /* Estilos generales */
 body {
     font-family: "Comic Sans MS", cursive, sans-serif;
-    background: url('../assets/images/background.jpg') no-repeat center/cover;
     background-size: cover;
     height: 100vh;
     display: flex;
