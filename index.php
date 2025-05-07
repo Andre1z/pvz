@@ -124,12 +124,15 @@ $username = isset($_SESSION['username']) ? htmlspecialchars($_SESSION['username'
 
         // Detecta cuando el jugador hace clic en una celda de la cuadrícula
         document.querySelectorAll(".grid-cell").forEach(cell => {
-            cell.addEventListener("click", function() {
+            cell.addEventListener("click", function(event) {
+                // Si el clic es en un sol, no mostrar la advertencia
+                if (event.target.classList.contains("sun")) {
+                    return;
+                }
+
                 if (selectedPlant) {
                     this.innerHTML = `<img src="assets/images/${selectedPlant}.png" alt="${selectedPlant}" class="plant">`; // Muestra la planta en la celda
                     selectedPlant = null; // Reiniciar selección después de colocar la planta
-                } else {
-                    alert("Selecciona una planta primero!");
                 }
             });
         });
