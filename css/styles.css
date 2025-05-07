@@ -48,52 +48,60 @@ body {
 }
 
 /* Estilos de las plantas */
-.plant {
-    width: 70px;
+#plant-selection {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 20px;
+    background: rgba(90, 143, 61, 0.9);
+    padding: 12px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.6);
+}
+
+/* Botones de plantas */
+.plant-btn {
+    background: #355e3b;
+    border: 2px solid #5a8f3d;
+    padding: 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: 0.3s;
+    width: 90px;
+}
+
+.plant-btn img {
+    width: 50px;
     height: auto;
-    animation: growPlant 0.5s ease-in-out;
+    margin-bottom: 5px;
 }
 
-@keyframes growPlant {
-    from {
-        transform: scale(0);
-    }
-    to {
-        transform: scale(1);
-    }
-}
-
-/* Estilos del Peashooter */
-.pea {
-    width: 20px;
-    height: 20px;
-    position: absolute;
-    transition: left 0.1s linear;
-}
-
-/* Estilos de los zombis */
-.zombie {
-    width: 70px;
-    height: auto;
-    position: absolute;
-    transition: left 6s linear;
+.plant-btn:hover {
+    background: #5a8f3d;
+    transform: scale(1.1);
 }
 
 /* Estilos del footer */
 footer {
-    background: #355e3b; /* Verde oscuro PvZ */
+    background: #355e3b;
     color: white;
     text-align: center;
     padding: 15px;
-    margin-top: auto; /* Empuja el footer a la parte inferior */
+    margin-top: auto;
     width: 100%;
     font-size: 16px;
     position: relative;
+    margin-top:30px;
 }
 
-/* Estilos del enlace de cerrar sesión */
+/* Enlace de cerrar sesión */
 footer p a {
-    color: #fbbc05; /* Amarillo PvZ */
+    color: #fbbc05;
     font-weight: bold;
     text-decoration: none;
     display: block;
@@ -102,20 +110,4 @@ footer p a {
 
 footer p a:hover {
     color: #ff9f00;
-}
-
-/* Animación del footer */
-@keyframes fadeInFooter {
-    from {
-        opacity: 0;
-        transform: translateY(10px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-footer {
-    animation: fadeInFooter 0.8s ease-in-out;
 }
