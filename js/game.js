@@ -177,6 +177,19 @@ function spawnZombie() {
     moveZombie(zombie, row, numCols - 1);
 }
 
+// Función para generar zombis cada 12 segundos
+function spawnZombie() {
+    const row = Math.floor(Math.random() * numRows);
+    const zombie = document.createElement("img");
+    zombie.src = images.zombie;
+    zombie.classList.add("zombie");
+    zombie.setAttribute("data-health", zombieData.health);
+
+    const initialCell = gridCells[row][numCols - 1]; // Última columna en la fila seleccionada
+    initialCell.appendChild(zombie);
+    moveZombie(zombie, row, numCols - 1);
+}
+
 // Movimiento de zombis y daño a las plantas
 function moveZombie(zombie, row, col) {
     const moveInterval = setInterval(() => {
@@ -184,22 +197,33 @@ function moveZombie(zombie, row, col) {
             const nextCell = gridCells[row][col - 1];
 
             if (!nextCell.hasChildNodes()) {
-                col--;
+                col--; 
                 nextCell.appendChild(zombie);
             } else {
-                let plantHealth = parseInt(nextCell.firstChild.getAttribute("data-health")) - 20;
-                nextCell.firstChild.setAttribute("data-health", plantHealth);
+                // 🧟‍♂️ ¡El zombi encuentra una planta!
+                let plant = nextCell.firstChild;
 
-                if (plantHealth <= 0) nextCell.firstChild.remove();
+                if (plant.classList.contains("plant")) { // Verifica que haya una planta real
+                    let plantHealth = parseInt(plant.getAttribute("data-health")) - zombieData.damage; // El zombi golpea con daño de 20
+                    
+                    plant.setAttribute("data-health", plantHealth);
+
+                    if (plantHealth <= 0) {
+                        plant.remove(); // 🌿 La planta muere cuando su vida llega a 0
+                        col--; // El zombi avanza al siguiente espacio
+                        nextCell.appendChild(zombie);
+                    }
+                }
             }
         } else {
             alert("¡Los zombis han llegado a tu casa!");
             clearInterval(moveInterval);
             zombie.remove();
         }
-    }, 6000);
+    }, 6000); // Los zombis atacan cada 6 segundos
 }
 
+// Generar un zombi cada 12 segundos
 setInterval(spawnZombie, 12000);
 
 // Detectar colocación de plantas en la cuadrícula
