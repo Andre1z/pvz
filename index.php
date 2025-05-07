@@ -39,7 +39,7 @@ $username = isset($_SESSION['username']) ? htmlspecialchars($_SESSION['username'
             <button class="plant-btn" data-plant="peashooter" data-cost="100">
                 <img src="assets/images/Peashooter.png" alt="Lanzaguisantes"> 100 🟡
             </button>
-            <button class="plant-btn" data-plant="walnut" data-cost="50">
+            <button class="plant-btn" data-plant="Nuez" data-cost="50">
                 <img src="assets/images/Nuez.png" alt="Nuez"> 50 🟡
             </button>
         </div>
@@ -110,6 +110,26 @@ $username = isset($_SESSION['username']) ? htmlspecialchars($_SESSION['username'
                     // Aquí puedes agregar la lógica para colocar la planta en el tablero
                 } else {
                     alert("No tienes suficientes soles!");
+                }
+            });
+        });
+        let selectedPlant = null; // Variable para almacenar la planta seleccionada
+
+        // Detecta cuando el jugador selecciona una planta
+        document.querySelectorAll(".plant-btn").forEach(button => {
+            button.addEventListener("click", function() {
+                selectedPlant = this.getAttribute("data-plant"); // Guarda la planta seleccionada
+            });
+        });
+
+        // Detecta cuando el jugador hace clic en una celda de la cuadrícula
+        document.querySelectorAll(".grid-cell").forEach(cell => {
+            cell.addEventListener("click", function() {
+                if (selectedPlant) {
+                    this.innerHTML = `<img src="assets/images/${selectedPlant}.png" alt="${selectedPlant}" class="plant">`; // Muestra la planta en la celda
+                    selectedPlant = null; // Reiniciar selección después de colocar la planta
+                } else {
+                    alert("Selecciona una planta primero!");
                 }
             });
         });
