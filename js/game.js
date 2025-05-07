@@ -10,7 +10,8 @@ const sunDisplay = document.getElementById("sun-amount");
 const plantData = {
     sunflower: { cooldown: 3400, cost: 50, health: 150 },
     peashooter: { cooldown: 4600, cost: 100, health: 200 },
-    walnut: { cooldown: 7000, cost: 50, health: 400 }
+    walnut: { cooldown: 7000, cost: 50, health: 400 },
+    "Nuez": { cooldown: 7000, cost: 50, health: 400 } // Se agregó "Nuez" para que coincida con index.php
 };
 
 const zombieData = { health: 210, damage: 20 };
@@ -21,7 +22,8 @@ const images = {
     peashooter: "assets/images/Peashooter.png",
     walnut: "assets/images/Nuez.png",
     pea: "assets/images/Pea.png",
-    zombie: "assets/images/Zombie.png"
+    zombie: "assets/images/Zombie.png",
+    Nuez: "assets/images/Nuez.png" // Agregar la versión con mayúscula
 };
 
 // Crear cuadrícula del juego
@@ -40,12 +42,22 @@ for (let row = 0; row < numRows; row++) {
 
 // Función para plantar una planta
 function plantPlant(cell, type) {
+    if (!type || !plantData.hasOwnProperty(type)) { 
+        console.error(`Error: La planta "${type}" no está definida en plantData.`);
+        return;
+    }
+
     if (sunAmount >= plantData[type].cost && !cell.hasChildNodes()) {
         sunAmount -= plantData[type].cost;
         sunDisplay.textContent = sunAmount;
 
+        if (!images[type]) {
+            console.error(`Error: No se encontró la imagen para "${type}".`);
+            return;
+        }
+
         const plant = document.createElement("img");
-        plant.src = images[type];
+        plant.src = images[type]; // Ahora verificamos que la imagen realmente existe
         plant.classList.add("plant");
         cell.appendChild(plant);
 
@@ -59,27 +71,34 @@ function plantPlant(cell, type) {
     }
 }
 
-// Función para generar soles cada 6 segundos
 function generateSun() {
-    const randomCell = gridCells[Math.floor(Math.random() * gridCells.length)];
+    const gridCells = Array.from(document.querySelectorAll(".grid-cell")); // Asegurar que sea un array
+    if (gridCells.length === 0) return; // Evitar errores si no hay celdas disponibles
+    
+    const randomCell = gridCells[Math.floor(Math.random() * gridCells.length)]; // Seleccionar celda válida
+
+    // Crear el sol como un elemento de texto con emoji
     const sun = document.createElement("span");
     sun.textContent = "☀️";
     sun.classList.add("sun");
     sun.setAttribute("data-value", "25");
-    randomCell.appendChild(sun);
 
+    randomCell.appendChild(sun); // Ahora funciona correctamente
+
+    // Evento para recoger el sol
     sun.addEventListener("click", function () {
-        sunAmount += 25;
+        sunAmount += parseInt(sun.getAttribute("data-value"));
         sunDisplay.textContent = sunAmount;
         sun.remove();
     });
 
+    // Eliminar el sol si no es recogido después de 5 segundos
     setTimeout(() => {
         if (sun.parentElement) sun.remove();
     }, 5000);
 }
 
-setInterval(generateSun, 6000);
+setInterval(generateSun, 6000); // Generar un sol cada 6 segundos
 
 // Función para que el Girasol genere soles cada 5 segundos
 function generateSunFromSunflower(sunflower) {
