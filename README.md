@@ -49,7 +49,7 @@ if ($conn->connect_error) die("Conexión fallida: " . $conn->connect_error);
 3️⃣ Ejecutar el Proyecto
 1. Coloca todos los archivos dentro de tu servidor local (htdocs para XAMPP).
 
-2. Abre http://localhost/index.php en tu navegador.
+2. Abre http://localhost/pvz en tu navegador.
 
 3. ¡Empieza a jugar! 🌱🧟‍♂️✨
 
