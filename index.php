@@ -69,6 +69,7 @@ $username = isset($_SESSION['username']) ? htmlspecialchars($_SESSION['username'
     </footer>
 
     <script src="js/game.js"></script>
+    <script src="js/zombies.js"></script>
     <script>
         // Cargar puntuaciones con AJAX
         document.addEventListener("DOMContentLoaded", function() {

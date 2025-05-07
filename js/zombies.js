@@ -1,92 +1,51 @@
-class Plant {
-    constructor(type, row, col) {
-        this.type = type;
-        this.row = row;
-        this.col = col;
-        this.health = this.getHealth();
-        this.attackPower = this.getAttackPower();
-        this.element = this.createElement();
-        this.init();
-    }
+// Configuración de los zombis
+const zombieSpawnInterval = 12000; // Tiempo entre cada generación de zombis
 
-    // Define la vida de cada planta
-    getHealth() {
-        const healthStats = {
-            sunflower: 100,
-            "pea-shooter": 150,
-            "wall-nut": 300
-        };
-        return healthStats[this.type] || 100;
-    }
+// Función para generar zombis
+function spawnZombie() {
+    const row = Math.floor(Math.random() * numRows); // Seleccionar fila aleatoria
+    const zombie = document.createElement("img");
+    zombie.src = images.zombie;
+    zombie.classList.add("zombie");
+    zombie.setAttribute("data-health", zombieData.health);
+    zombie.dataset.row = row; // Guardar la fila del zombi
 
-    // Define el poder de ataque de cada planta
-    getAttackPower() {
-        const attackStats = {
-            sunflower: 0, // No ataca, solo genera soles
-            "pea-shooter": 25,
-            "wall-nut": 0 // Solo bloquea
-        };
-        return attackStats[this.type] || 0;
-    }
+    const initialCell = gridCells[row][numCols - 1]; // Última columna en la fila seleccionada
+    initialCell.appendChild(zombie);
+    moveZombie(zombie, row, numCols - 1);
+}
 
-    // Crea el elemento visual de la planta
-    createElement() {
-        const plant = document.createElement("div");
-        plant.classList.add("plant", this.type);
-        plant.style.position = "absolute";
-        plant.style.top = `${this.row * 100}px`;
-        plant.style.left = `${this.col * 100}px`;
-        return plant;
-    }
+// Función para mover zombis y atacar plantas
+function moveZombie(zombie, row, col) {
+    const moveInterval = setInterval(() => {
+        if (col > 0) {
+            const nextCell = gridCells[row][col - 1];
 
-    // Inicializa la planta en el tablero
-    init() {
-        document.getElementById("game-grid").appendChild(this.element);
-        if (this.type === "sunflower") {
-            this.generateSun();
-        } else if (this.type === "pea-shooter") {
-            this.startShooting();
-        }
-    }
+            if (!nextCell.hasChildNodes()) {
+                col--; 
+                nextCell.appendChild(zombie);
+            } else {
+                let plant = nextCell.querySelector(".plant");
 
-    // Genera soles cada cierto tiempo
-    generateSun() {
-        setInterval(() => {
-            console.log("☀️ Sol generado");
-            updateSunPoints(25);
-        }, 5000);
-    }
+                if (plant) {
+                    let plantHealth = parseInt(plant.getAttribute("data-health")) - zombieData.damage;
 
-    // Dispara guisantes contra los zombis
-    startShooting() {
-        setInterval(() => {
-            const pea = document.createElement("div");
-            pea.classList.add("pea");
-            pea.style.position = "absolute";
-            pea.style.top = `${this.row * 100 + 20}px`;
-            pea.style.left = `${this.col * 100 + 50}px`;
-            document.getElementById("game-grid").appendChild(pea);
+                    plant.setAttribute("data-health", plantHealth);
 
-            let position = this.col * 100 + 50;
-            const interval = setInterval(() => {
-                position += 10;
-                pea.style.left = `${position}px`;
-
-                if (position > 900) {
-                    clearInterval(interval);
-                    pea.remove();
+                    if (plantHealth <= 0) {
+                        plant.remove();
+                        col--; 
+                        nextCell.appendChild(zombie);
+                    }
                 }
-            }, 50);
-        }, 2000);
-    }
+            }
+        } else {
+            alert("¡Los zombis han llegado a tu casa!");
+            clearInterval(moveInterval);
+            zombie.remove();
+        }
+    }, 6000);
 }
 
-// Función para colocar plantas en el tablero
-function placePlant(type, row, col) {
-    if (sunPoints >= getPlantCost(type)) {
-        new Plant(type, row, col);
-        updateSunPoints(-getPlantCost(type));
-    }
-}
-
-console.log("Plants.js cargado correctamente.");
+// Iniciar generación de zombis en el juego
+setInterval(spawnZombie, zombieSpawnInterval);
