@@ -28,10 +28,6 @@ $username = isset($_SESSION['username']) ? htmlspecialchars($_SESSION['username'
         <h1>🌱 Plants vs Zombies - Web Edition 🧟‍♂️</h1>
     </header>
 
-    <nav>
-        <a href="php/logout.php">Cerrar sesión</a>
-    </nav>
-
     <main>
         <p>Bienvenido, <span id="username-display">Invitado</span>. ¡Disfruta del juego!</p>
 
@@ -79,5 +75,9 @@ $username = isset($_SESSION['username']) ? htmlspecialchars($_SESSION['username'
             }
         });
     </script>
+    <footer>
+        <p>© <?php echo date("Y"); ?> Andrei</p>
+        <p><a href="php/logout.php">Cerrar sesión</a></p>
+    </footer>
 </body>
 </html>
