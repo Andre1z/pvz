@@ -1,35 +1,39 @@
 <?php
-require_once 'db.php';
+require_once 'config.php';
 session_start();
 
-header('Content-Type: application/json');
-
-// Verificar que el usuario esté autenticado
-if (!isset($_SESSION['user_id'])) {
-    echo json_encode(['status' => 'error', 'message' => 'Debe iniciar sesión para guardar su puntuación.']);
+if (!isset($_SESSION['user_id']) || !isset($_SESSION['username'])) {
+    echo json_encode(["status" => "error", "message" => "Usuario no autenticado"]);
     exit();
 }
 
-// Obtener los datos enviados
+$user_id = $_SESSION['user_id'];
+$username = $_SESSION['username'];
 $data = json_decode(file_get_contents("php://input"), true);
-$score = isset($data['score']) ? intval($data['score']) : null;
 
-if ($score === null || $score < 0) {
-    echo json_encode(['status' => 'error', 'message' => 'Puntuación inválida.']);
+// ✅ Validación extra para evitar registros corruptos
+if (!isset($data['score']) || !is_numeric($data['score'])) {
+    echo json_encode(["status" => "error", "message" => "Puntuación inválida"]);
     exit();
 }
 
-try {
-    // Guardar la puntuación en la base de datos
-    $stmt = $pdo->prepare("INSERT INTO scores (user_id, username, score) VALUES (:user_id, :username, :score)");
-    $stmt->execute([
-        ':user_id' => $_SESSION['user_id'],
-        ':username' => $_SESSION['username'],
-        ':score' => $score
-    ]);
+$score = intval($data['score']);
 
-    echo json_encode(['status' => 'success', 'message' => 'Puntuación guardada correctamente.']);
-} catch (PDOException $e) {
-    echo json_encode(['status' => 'error', 'message' => 'Error al guardar la puntuación: ' . $e->getMessage()]);
+// ✅ Si el usuario ya tiene una puntuación, actualizar en lugar de insertar un nuevo registro
+$insertQuery = $conn->prepare("
+    INSERT INTO scores (user_id, username, score) 
+    VALUES (?, ?, ?) 
+    ON DUPLICATE KEY UPDATE score = VALUES(score)
+");
+
+$insertQuery->bind_param("isi", $user_id, $username, $score);
+
+if ($insertQuery->execute()) {
+    echo json_encode(["status" => "success", "message" => "Puntuación guardada correctamente"]);
+} else {
+    echo json_encode(["status" => "error", "message" => "Error al guardar la puntuación"]);
 }
+
+$insertQuery->close();
+$conn->close();
 ?>

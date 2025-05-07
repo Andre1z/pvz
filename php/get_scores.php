@@ -1,16 +1,25 @@
 <?php
-require_once 'db.php';
+require_once 'config.php';
 
-header('Content-Type: application/json');
+header("Content-Type: application/json");
 
 try {
-    // Obtener las puntuaciones desde la base de datos
-    $stmt = $pdo->prepare("SELECT username, score FROM scores ORDER BY score DESC LIMIT 10");
-    $stmt->execute();
-    $scores = $stmt->fetchAll();
+    $result = $conn->query("SELECT username, MAX(score) AS score FROM scores GROUP BY username ORDER BY score DESC");
 
-    echo json_encode(['status' => 'success', 'scores' => $scores]);
-} catch (PDOException $e) {
-    echo json_encode(['status' => 'error', 'message' => 'Error al obtener puntuaciones: ' . $e->getMessage()]);
+    $scores = [];
+    while ($row = $result->fetch_assoc()) {
+        $scores[] = $row;
+    }
+
+    // ✅ Si no hay puntuaciones, devolver un JSON vacío
+    if (empty($scores)) {
+        echo json_encode(["status" => "success", "scores" => []]); // JSON sin errores
+    } else {
+        echo json_encode(["status" => "success", "scores" => $scores]);
+    }
+} catch (Exception $e) {
+    echo json_encode(["status" => "error", "message" => "Error en consulta SQL: " . $e->getMessage()]);
 }
+
+$conn->close();
 ?>

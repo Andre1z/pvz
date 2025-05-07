@@ -187,10 +187,18 @@ function moveZombie(zombie, row, col) {
                 col--;
                 nextCell.appendChild(zombie);
             } else {
-                let plantHealth = parseInt(nextCell.firstChild.getAttribute("data-health")) - 20;
-                nextCell.firstChild.setAttribute("data-health", plantHealth);
+                let plant = nextCell.querySelector(".plant");
 
-                if (plantHealth <= 0) nextCell.firstChild.remove();
+                if (plant) {
+                    let plantHealth = parseInt(plant.getAttribute("data-health")) - zombieData.damage;
+                    plant.setAttribute("data-health", plantHealth);
+
+                    if (plantHealth <= 0) {
+                        plant.remove();
+                        col--;
+                        nextCell.appendChild(zombie);
+                    }
+                }
             }
         } else {
             alert("¡Los zombis han llegado a tu casa!");
@@ -198,9 +206,31 @@ function moveZombie(zombie, row, col) {
             zombie.remove();
         }
     }, 6000);
-}
 
-setInterval(spawnZombie, 12000);
+    // ✅ Detectar cuando el zombi muere y guardar la puntuación
+    const checkZombieHealth = setInterval(() => {
+        let zombieHealth = parseInt(zombie.getAttribute("data-health"));
+
+        if (zombieHealth <= 0) {
+            sunAmount += 40; // Sumar puntos
+            sunDisplay.textContent = sunAmount;
+
+            // Enviar puntuación al servidor
+            fetch("php/save_score.php", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ score: sunAmount })
+            })
+            .then(response => response.json())
+            .then(data => console.log("Puntuación guardada:", data))
+            .catch(error => console.error("Error al guardar puntuación:", error));
+
+            clearInterval(moveInterval);
+            clearInterval(checkZombieHealth);
+            zombie.remove();
+        }
+    }, 500);
+}
 
 // Detectar colocación de plantas en la cuadrícula
 document.querySelectorAll(".grid-cell").forEach(cell => {
