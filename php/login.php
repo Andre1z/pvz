@@ -58,5 +58,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         </form>
         <p>¿No tienes cuenta? <a href="register.php">Regístrate aquí</a></p>
     </div>
+    <script>
+        document.querySelector("form").addEventListener("submit", function(event) {
+            localStorage.setItem("username", document.querySelector('input[name="username"]').value);
+        });
+</script>
 </body>
 </html>

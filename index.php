@@ -1,11 +1,19 @@
 <?php
 require_once 'php/config.php';
 
+// Verificamos si la sesión ya está iniciada
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
 // Verificamos si el usuario ha iniciado sesión
 if (!isset($_SESSION['user_id'])) {
     header("Location: php/login.php");
     exit();
 }
+
+// Definir el nombre de usuario si está disponible en la sesión
+$username = isset($_SESSION['username']) ? htmlspecialchars($_SESSION['username']) : "Invitado";
 ?>
 
 <!DOCTYPE html>
@@ -25,7 +33,7 @@ if (!isset($_SESSION['user_id'])) {
     </nav>
 
     <main>
-        <p>Bienvenido, <?php echo htmlspecialchars($_SESSION['username']); ?>. ¡Disfruta del juego!</p>
+        <p>Bienvenido, <span id="username-display">Invitado</span>. ¡Disfruta del juego!</p>
 
         <div id="game-container">
             <div id="game-grid"></div>
@@ -64,6 +72,12 @@ if (!isset($_SESSION['user_id'])) {
             }
         })
         .catch(error => console.error("Error al obtener puntuaciones:", error));
+        document.addEventListener("DOMContentLoaded", function() {
+            const storedUsername = localStorage.getItem("username");
+            if (storedUsername) {
+                document.getElementById("username-display").textContent = storedUsername;
+            }
+        });
     </script>
 </body>
 </html>
