@@ -163,6 +163,9 @@ function movePea(pea) {
         }
     }, 100);
 }
+function placeWalnut(cell) {
+    cell.setAttribute("data-health", 400); // Asigna la vida a la Nuez
+}
 
 // Función para generar zombis cada 12 segundos
 function spawnZombie() {
@@ -172,7 +175,7 @@ function spawnZombie() {
     zombie.classList.add("zombie");
     zombie.setAttribute("data-health", 210);
 
-    const initialCell = gridCells[row][numCols - 1];
+    const initialCell = gridCells[row][numCols - 1]; // Última columna en la fila seleccionada
     initialCell.appendChild(zombie);
     moveZombie(zombie, row, numCols - 1);
 }
@@ -200,18 +203,20 @@ function moveZombie(zombie, row, col) {
                 col--; 
                 nextCell.appendChild(zombie);
             } else {
-                // 🧟‍♂️ ¡El zombi encuentra una planta!
+                // 🧟‍♂️ El zombi encuentra una planta
                 let plant = nextCell.firstChild;
 
-                if (plant.classList.contains("plant")) { // Verifica que haya una planta real
-                    let plantHealth = parseInt(plant.getAttribute("data-health")) - zombieData.damage; // El zombi golpea con daño de 20
+                if (plant.classList.contains("plant")) {
+                    let plantHealth = parseInt(plant.getAttribute("data-health")) - 20; // El zombi ataca con daño de 20
                     
                     plant.setAttribute("data-health", plantHealth);
 
                     if (plantHealth <= 0) {
-                        plant.remove(); // 🌿 La planta muere cuando su vida llega a 0
-                        col--; // El zombi avanza al siguiente espacio
+                        plant.remove(); // 🌿 La planta muere
+                        col--; // El zombi avanza tras destruir la planta
                         nextCell.appendChild(zombie);
+                    } else {
+                        return; // ⚠️ El zombi NO avanza hasta que destruye la planta
                     }
                 }
             }
@@ -220,7 +225,7 @@ function moveZombie(zombie, row, col) {
             clearInterval(moveInterval);
             zombie.remove();
         }
-    }, 6000); // Los zombis atacan cada 6 segundos
+    }, 6000); // Ataque cada 6 segundos
 }
 
 // Generar un zombi cada 12 segundos
@@ -228,10 +233,17 @@ setInterval(spawnZombie, 12000);
 
 // Detectar colocación de plantas en la cuadrícula
 document.querySelectorAll(".grid-cell").forEach(cell => {
-    cell.addEventListener("click", function() {
+    cell.addEventListener("click", function(event) {
         if (selectedPlant) {
-            plantPlant(this, selectedPlant);
-            selectedPlant = null;
+            let plantLife = plantData[selectedPlant] ? plantData[selectedPlant].health : 100; // Asignar vida a la planta
+
+            let plant = document.createElement("img");
+            plant.src = images[selectedPlant];
+            plant.classList.add("plant");
+            plant.setAttribute("data-health", plantLife); // AHORA LA PLANTA TIENE SU SALUD ASIGNADA
+
+            this.appendChild(plant);
+            selectedPlant = null; // Reiniciar selección después de colocar la planta
         }
-    });
-});
+    }
+)});        
