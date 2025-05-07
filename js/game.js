@@ -101,26 +101,44 @@ function generateSun() {
 setInterval(generateSun, 6000); // Generar un sol cada 6 segundos
 
 // Función para que el Girasol genere soles cada 5 segundos
-function generateSunFromSunflower(sunflower) {
-    setInterval(() => {
-        if (parseInt(sunflower.getAttribute("data-health")) > 0) {
-            const sun = document.createElement("span");
-            sun.textContent = "☀️";
-            sun.classList.add("sun");
-            sun.setAttribute("data-value", "50");
-            sunflower.appendChild(sun);
+function generateSunFromSunflower(cell) {
+    if (!cell.hasAttribute("sunflower-active")) { // Evita múltiples ejecuciones en la misma celda
+        cell.setAttribute("sunflower-active", "true"); 
 
-            sun.addEventListener("click", function () {
-                sunAmount += 50;
-                sunDisplay.textContent = sunAmount;
-                sun.remove();
-            });
+        setInterval(() => {
+            if (cell.querySelector(".plant")?.classList.contains("sunflower")) {
+                let existingSun = cell.querySelector(".sun");
 
-            setTimeout(() => {
-                if (sun.parentElement) sun.remove();
-            }, 5000);
-        }
-    }, 5000);
+                if (!existingSun) { // Solo generar un sol si no hay otro presente
+                    const sun = document.createElement("span");
+                    sun.textContent = "☀️";
+                    sun.classList.add("sun");
+                    sun.setAttribute("data-value", "50");
+
+                    // Posicionar el sol dentro de la celda del Girasol
+                    sun.style.position = "absolute";
+                    sun.style.top = "10px";
+                    sun.style.left = "10px";
+
+                    cell.appendChild(sun);
+
+                    // Evento para recoger el sol
+                    sun.addEventListener("click", function () {
+                        sunAmount += 50;
+                        sunDisplay.textContent = sunAmount;
+                        sun.remove();
+                    });
+
+                    // Eliminar el sol si no es recogido después de 5 segundos
+                    setTimeout(() => {
+                        if (sun.parentElement) sun.remove();
+                    }, 5000);
+                }
+            } else {
+                cell.removeAttribute("sunflower-active"); // Si el Girasol es destruido, se detiene la generación
+            }
+        }, 5000);
+    }
 }
 
 // Función corregida para que el Lanzaguisantes dispare guisantes cada 2 segundos
